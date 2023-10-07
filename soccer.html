@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/json2csv"></script>
+    <script>
+       
+  let clothPrice 
+  let horsePrice 
+  let metalPrice 
+  let mountPrice       
+ 
+const lineups = async() => {
+const options = {
+  method: 'GET',
+  url: 'https://www.albion-online-data.com/api/v2/stats/prices/T5_FARM_HORSE_GROWN,T5_MOUNT_ARMORED_HORSE,T5_METALBAR,T5_CLOTH?locations=Bridgewatch&qualities=0',
+
+};
+
+
+  var response2 = await axios.request(options);
+  console.log(response2);
+  oga = response2.data;
+  for(let i = 0;i<oga.length; i++){
+    if(oga[i].item_id=="T5_CLOTH" && oga[i].quality == 1){
+      clothPrice = parseInt(oga[i].sell_price_min);
+    }else if(oga[i].item_id=="T5_METALBAR" && oga[i].quality == 1){
+      metalPrice = parseInt(oga[i].sell_price_min);
+    }else if(oga[i].item_id=="T5_FARM_HORSE_GROWN" && oga[i].quality == 1){
+      horsePrice = parseInt(oga[i].sell_price_min);
+    }else if(oga[i].item_id=="T5_MOUNT_ARMORED_HORSE" && oga[i].quality == 1){
+      mountPrice = parseInt(oga[i].sell_price_min);
+
+  }
+	
+}
+}
+function checkHorses(){
+var inter = document.getElementById("horseAmt").value;
+numb = parseInt(inter);
+var text = document.getElementById("horseAmt");
+var div = document.getElementById('display');
+clothFinal = (numb*10)*clothPrice;
+metalFinal = (numb*20)*metalPrice;
+costs = clothFinal+metalFinal;
+mountSales = (numb*mountPrice);
+div.innerHTML = "To make "+ numb + " horses you will need "+"<br />"
+ + numb*10 + " ornate cloth which sells for " + clothFinal + "<br />"
+  + numb*20 + " titanium steel bar which sells for " + metalFinal + "<br />"
+  + "<br />" + numb + " mounts will sell for approx " + mountSales + " so the maximum you can spend on grown horses is "
+  + (mountSales-costs)/numb;
+  
+  
+ 
+
+
+text.innerHTML= '';
+
+}
+    </script>
+</head>
+<body>
+<label>How many horses would you like to make?</label>
+<textarea id="horseAmt"></textarea>
+
+ <button onClick="lineups()">
+  Fetch Live Prices
+ </button>
+ <button onClick="checkHorses()">
+  Check flip value
+ </button>
+ <div id = "display">
+
+ </div>
+
+</body>
+</html>
+
